@@ -44,11 +44,17 @@ PIXI.loader
   .load(setup);
 
 
-//Global vars
+//Texts
 var largeText = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 50,
 })
+
+var lose = new PIXI.Text("You lost! Don't eat the pizza.", largeText);
+lose.x = 200;
+lose.y = 50;
+app.stage.addChild(lose);
+lose.visible = false;
 
 var message = new PIXI.Text('Pakene!');
 app.stage.addChild(message);
@@ -76,7 +82,7 @@ function setup() {
     let head = new PIXI.Sprite(PIXI.loader.resources["sprites/VodKabelovre.png"].texture);
     app.stage.addChild(head);
     head.interactive = true;
-    head.hitArea = new PIXI.Circle (10,10, 10);
+    head.hitArea = new PIXI.Circle (20, 20, 20);
 
     //Create beets
     for (i = 0; i < 30; i++) {
@@ -88,7 +94,7 @@ function setup() {
     for (let i = 0; i < 30; i++) {
     (function (x) {
       setTimeout(function() {
-    beet[i].position.set(Math.floor(Math.random() * 800), Math.floor(Math.random() * 800));
+    beet[i].position.set(Math.floor(Math.random() * 1500), Math.floor(Math.random() * 800));
     }, i* 2000 );
     })(i);
     }
@@ -107,6 +113,7 @@ let mousePosition = getMousePosition();
 let speed = 2;
 let angle = 45;
 
+
 app.ticker.add(()=>{
 
 
@@ -120,7 +127,6 @@ app.ticker.add(()=>{
     head.y += yVel;
 
     checkCollision();
-
     
 });
 
@@ -140,24 +146,29 @@ function checkCollision () {
           double.visible = true;
           app.ticker.stop();
         }
+
       app.stage.removeChild(beet[i]);
-      beet[i].x = 1000;
-      beet[i].y = 1000; 
+      beet[i].x = 2000;
+      beet[i].y = 2000; 
       score.text = "Score: "+s;
       speed += 0.5;
       console.log("BeetID: " +i);
       message.text = "Eat 30 beets!";
       }
+
+    //Check head/pizza collision
+    head.on('mouseover', function(event){
+    lose.visible = true;
+    });
+    if (lose.visible == true)
+    app.stop();
     }
-    head.mouseover = function (mousedata) {
-      double.text = "You lost! Don't eat the pizza.";
-      double.visible = true;
-      app.ticker.stop();
-    }
+
+}
 }
 
 
-}
+
 function collision(r1, r2) {
 
 let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
