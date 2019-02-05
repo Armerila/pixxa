@@ -64,15 +64,24 @@ var beet = [];
 function setup() {
     
     let head = new PIXI.Sprite(PIXI.loader.resources["sprites/VodKabelovre.png"].texture);
-    
-    for (var i = 0; i < 10; i++) {
+    app.stage.addChild(head);
+
+    //Create beets
+    for (i = 0; i < 30; i++) {
     beet[i] = new PIXI.Sprite(PIXI.loader.resources["sprites/beet.png"].texture);
-    beet[i].position.set(Math.floor(Math.random() * 800), Math.floor(Math.random() * 800));
+    beet[i].position.set(1000, 1000);
     app.stage.addChild(beet[i]);
     }
 
+    for (let i = 0; i < 30; i++) {
+    (function (x) {
+      setTimeout(function() {
+    beet[i].position.set(Math.floor(Math.random() * 800), Math.floor(Math.random() * 800));
+    }, i* 3000 );
+    })(i);
+    }
 
-    app.stage.addChild(head);
+    
 
 
 //Mouse follow physics
@@ -83,7 +92,7 @@ const getMousePosition = () => {
 let xVel = 0.1;
 let yVel = 0.1;
 let mousePosition = getMousePosition();
-let speed = 1;
+let speed = 2;
 let angle = 45;
 
 app.ticker.add(()=>{
@@ -104,7 +113,7 @@ app.ticker.add(()=>{
 
 
 function checkCollision () {
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 30; i++) {
       if (collision(head, beet[i])) {
       s++;
       message.text = "NAM!";
@@ -112,7 +121,7 @@ function checkCollision () {
       beet[i].x = 1000;
       beet[i].y = 1000; 
       score.text = "Score: "+s;
-      speed += 1;
+      speed += 0.5;
       console.log("BeetID: " +i);
       }
     }
