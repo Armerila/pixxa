@@ -45,6 +45,11 @@ PIXI.loader
 
 
 //Global vars
+var largeText = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 50,
+})
+
 var message = new PIXI.Text('Pakene!');
 app.stage.addChild(message);
 
@@ -56,6 +61,11 @@ var s = 0;
 var score = new PIXI.Text('Score: '+s);  
 score.x = 400;
 app.stage.addChild(score);
+
+var double = new PIXI.Text(' ', largeText);
+double.x = 200;
+double.y = 50;
+app.stage.addChild(double);
 
 var beet = [];
 
@@ -77,7 +87,7 @@ function setup() {
     (function (x) {
       setTimeout(function() {
     beet[i].position.set(Math.floor(Math.random() * 800), Math.floor(Math.random() * 800));
-    }, i* 3000 );
+    }, i* 2000 );
     })(i);
     }
 
@@ -116,15 +126,30 @@ function checkCollision () {
     for (var i = 0; i < 30; i++) {
       if (collision(head, beet[i])) {
       s++;
-      message.text = "NAM!";
+      double.visible=false;
+        if (i == 9 || i == 19) {
+          s=s*2;
+          double.text = "10 in row! Score doubled";
+          double.visible = true;
+        }
+        if (i == 29) {
+          double.text = "You win!"
+          double.visible = true;
+          app.ticker.stop();
+        }
       app.stage.removeChild(beet[i]);
       beet[i].x = 1000;
       beet[i].y = 1000; 
       score.text = "Score: "+s;
       speed += 0.5;
       console.log("BeetID: " +i);
+      message.text = "Eat 30 beets!";
       }
     }
+}
+
+function pizzaCollision () {
+
 }
 
 }
