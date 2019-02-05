@@ -75,6 +75,8 @@ function setup() {
     
     let head = new PIXI.Sprite(PIXI.loader.resources["sprites/VodKabelovre.png"].texture);
     app.stage.addChild(head);
+    head.interactive = true;
+    head.hitArea = new PIXI.Circle (10,10, 10);
 
     //Create beets
     for (i = 0; i < 30; i++) {
@@ -107,6 +109,7 @@ let angle = 45;
 
 app.ticker.add(()=>{
 
+
     mousePosition = getMousePosition();
     let headX = mousePosition.x - head.x;
     let headY = mousePosition.y - head.y;
@@ -116,9 +119,9 @@ app.ticker.add(()=>{
     head.x += xVel;
     head.y += yVel;
 
-    checkCollision()
+    checkCollision();
 
-
+    
 });
 
 
@@ -146,11 +149,13 @@ function checkCollision () {
       message.text = "Eat 30 beets!";
       }
     }
+    head.mouseover = function (mousedata) {
+      double.text = "You lost! Don't eat the pizza.";
+      double.visible = true;
+      app.ticker.stop();
+    }
 }
 
-function pizzaCollision () {
-
-}
 
 }
 function collision(r1, r2) {
