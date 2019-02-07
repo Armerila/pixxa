@@ -115,7 +115,7 @@ function setup() {
     }
 
     
-
+    pointer.press = () => console.log("The pointer was pressed");
 
 //Mouse follow physics
 const getMousePosition = () => {
@@ -132,6 +132,12 @@ let angle = 45;
 app.ticker.add(()=>{
 
     t.update();
+
+    if (pointer.isDown == true) {
+      mousePosition.x = pointer.x;
+      mousePosition.y = pointer.y;
+    }
+
     mousePosition = getMousePosition();
     let headX = mousePosition.x - head.x;
     let headY = mousePosition.y - head.y;
