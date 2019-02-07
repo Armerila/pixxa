@@ -5,6 +5,7 @@
   <title>Pizza!</title>
 </head>
   <script src="pixi.min.js"></script>
+  <script src="tink.js"></script>
 <body>
 
 <style>* {
@@ -21,7 +22,6 @@
   }
 );
 
-
 //Add the canvas
 document.body.appendChild(app.view);
 
@@ -34,7 +34,8 @@ app.renderer.resize(1920, 1080);
 
 cursor = "url('sprites/pizza.png'),auto";
 app.renderer.plugins.interaction.cursorStyles.default = cursor;
-
+let t = new Tink(PIXI, app.renderer.view);
+pointer = t.makePointer();
 //scaleToWindow(app.renderer.view);
 
 window.onresize = function (event) {
@@ -130,7 +131,7 @@ let angle = 45;
 
 app.ticker.add(()=>{
 
-
+    t.update();
     mousePosition = getMousePosition();
     let headX = mousePosition.x - head.x;
     let headY = mousePosition.y - head.y;
