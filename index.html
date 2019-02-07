@@ -11,7 +11,6 @@
     padding: 0; margin: 0;
 }
 </style>
-
   <script type="text/javascript">
     let app = new PIXI.Application({ 
         width: 800,        
@@ -22,6 +21,7 @@
   }
 );
 
+
 //Add the canvas
 document.body.appendChild(app.view);
 
@@ -30,11 +30,23 @@ app.renderer.backgroundColor = 0xf48f42;
 app.renderer.view.style.position = "absolute";
 app.renderer.view.style.display = "block";
 app.renderer.autoResize = true;
-app.renderer.resize(window.innerWidth, window.innerHeight);
+app.renderer.resize(1920, 1080);
 
 cursor = "url('sprites/pizza.png'),auto";
 app.renderer.plugins.interaction.cursorStyles.default = cursor;
 
+//scaleToWindow(app.renderer.view);
+
+window.onresize = function (event) {
+var resolution = window.devicePixelRatio;
+var w = window.innerWidth;
+var h = window.innerHeight;
+var w2 = Math.round(w * resolution);
+var h2 = Math.round(h * resolution);
+app.renderer.view.style.width = w + "px";
+app.renderer.view.style.height = h + "px";
+app.renderer.resize(w2, h2);
+}
 
 
 //Sprite loader
@@ -82,18 +94,20 @@ function setup() {
     let head = new PIXI.Sprite(PIXI.loader.resources["sprites/VodKabelovre.png"].texture);
     app.stage.addChild(head);
     head.interactive = true;
-    head.hitArea = new PIXI.Circle (20, 20, 20);
+    head.hitArea = new PIXI.Circle (0, 0, 30);
 
     //Create beets
     for (i = 0; i < 30; i++) {
     beet[i] = new PIXI.Sprite(PIXI.loader.resources["sprites/beet.png"].texture);
-    beet[i].position.set(1000, 1000);
+    beet[i].visible = false;
+    beet[i].position.set(3000, 3000);
     app.stage.addChild(beet[i]);
     }
 
     for (let i = 0; i < 30; i++) {
     (function (x) {
       setTimeout(function() {
+    beet[i].visible = true;
     beet[i].position.set(Math.floor(Math.random() * 1500), Math.floor(Math.random() * 800));
     }, i* 2000 );
     })(i);
@@ -208,6 +222,83 @@ if (Math.abs(vx) < combinedHalfWidths) {
 return hit;
 };
 
+function scaleToWindow(canvas, backgroundColor) {
+  var scaleX, scaleY, scale, center;
+
+  //1. Scale the canvas to the correct size
+  //Figure out the scale amount on each axis
+  scaleX = window.innerWidth / canvas.offsetWidth;
+  scaleY = window.innerHeight / canvas.offsetHeight;
+
+  //Scale the canvas based on whichever value is less: `scaleX` or `scaleY`
+  scale = Math.min(scaleX, scaleY);
+  canvas.style.transformOrigin = "0 0";
+  canvas.style.transform = "scale(" + scale + ")";
+
+  //2. Center the canvas.
+  //Decide whether to center the canvas vertically or horizontally.
+  //Wide canvases should be centered vertically, and 
+  //square or tall canvases should be centered horizontally
+  if (canvas.offsetWidth > canvas.offsetHeight) {
+    if (canvas.offsetWidth * scale < window.innerWidth) {
+      center = "horizontally";
+    } else {
+      center = "vertically";
+    }
+  } else {
+    if (canvas.offsetHeight * scale < window.innerHeight) {
+      center = "vertically";
+    } else {
+      center = "horizontally";
+    }
+  }
+
+  //Center horizontally (for square or tall canvases)
+  var margin;
+  if (center === "horizontally") {
+    margin = (window.innerWidth - canvas.offsetWidth * scale) / 2;
+    canvas.style.marginTop = 0 + "px";
+    canvas.style.marginBottom = 0 + "px";
+    canvas.style.marginLeft = margin + "px";
+    canvas.style.marginRight = margin + "px";
+  }
+
+  //Center vertically (for wide canvases) 
+  if (center === "vertically") {
+    margin = (window.innerHeight - canvas.offsetHeight * scale) / 2;
+    canvas.style.marginTop = margin + "px";
+    canvas.style.marginBottom = margin + "px";
+    canvas.style.marginLeft = 0 + "px";
+    canvas.style.marginRight = 0 + "px";
+  }
+
+  //3. Remove any padding from the canvas  and body and set the canvas
+  //display style to "block"
+  canvas.style.paddingLeft = 0 + "px";
+  canvas.style.paddingRight = 0 + "px";
+  canvas.style.paddingTop = 0 + "px";
+  canvas.style.paddingBottom = 0 + "px";
+  canvas.style.display = "block";
+
+  //4. Set the color of the HTML body background
+  document.body.style.backgroundColor = backgroundColor;
+
+  //Fix some quirkiness in scaling for Safari
+  var ua = navigator.userAgent.toLowerCase();
+  if (ua.indexOf("safari") != -1) {
+    if (ua.indexOf("chrome") > -1) {
+      // Chrome
+    } else {
+      // Safari
+      //canvas.style.maxHeight = "100%";
+      //canvas.style.minHeight = "100%";
+    }
+  }
+
+  //5. Return the `scale` value. This is important, because you'll nee this value 
+  //for correct hit testing between the pointer and sprites
+  return scale;
+}
   </script>
 </body>
 </html>
