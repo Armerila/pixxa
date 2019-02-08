@@ -36,7 +36,7 @@ cursor = "url('sprites/pizza.png'),auto";
 app.renderer.plugins.interaction.cursorStyles.default = cursor;
 let t = new Tink(PIXI, app.renderer.view);
 pointer = t.makePointer();
-//scaleToWindow(app.renderer.view);
+pointer.style = cursor;
 
 window.onresize = function (event) {
 var resolution = window.devicePixelRatio;
@@ -114,8 +114,6 @@ function setup() {
     })(i);
     }
 
-    
-    pointer.press = () => console.log("The pointer was pressed");
 
 //Mouse follow physics
 const getMousePosition = () => {
@@ -131,8 +129,8 @@ let angle = 45;
 
 app.ticker.add(()=>{
 
+    //Mobile touch support
     t.update();
-
     if (pointer.isDown == true) {
       mousePosition.x = pointer.x;
       mousePosition.y = pointer.y;
